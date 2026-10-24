@@ -67,9 +67,3 @@ make up                 # atau semuanya via Docker Compose (web :3000, api :8000
   (kelipatan 5%, minimal 5%/hari) atau diinput manual; lintas bulan melanjutkan persentase sebelumnya.
 - Story tanpa Epic: label wajib manual. Story tanpa sub-task: peringatan, aktivitas kosong.
 - Working Hour ditulis sebagai angka (openpyxl tidak menghitung rumus).
-
-## Belum dibuat (lihat `docs/development-plan.md`)
-
-OAuth 2.0 (3LO) + peran admin/karyawan/Team Lead, PostgreSQL (Alembic) untuk template dan
-`story_end_state`, antrean Redis, tanda tangan di S3, CRUD template admin, editor persentase manual
-per hari di UI, TanStack Table, ekspor PDF.
