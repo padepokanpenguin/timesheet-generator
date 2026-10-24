@@ -35,6 +35,7 @@
   let formHolidayCountry = $state('ID');
   let formExtraHolidays = $state<string[]>([]);
   let newHolidayInput = $state('');
+  let formLayoutType = $state<'default' | 'adi'>('default');
 
   // Formula Parameters
   let formHoursPerManday = $state(8.0);
@@ -88,6 +89,7 @@
     formTimezone = t.timezone;
     formHolidayCountry = t.holiday_country;
     formExtraHolidays = [...(t.extra_holidays || [])];
+    formLayoutType = (t.layout_type as 'default' | 'adi') || 'default';
 
     // Formula
     formHoursPerManday = t.formula.hours_per_manday;
@@ -113,6 +115,7 @@
     formTitle = 'Software Engineer';
     formEmployeeName = 'Nama Karyawan';
     formTeamLeadName = 'Nama Team Lead';
+    formLayoutType = 'default';
     formWorkStart = '08:30';
     formWorkEnd = '17:30';
     formBreakMinutes = 60;
@@ -144,7 +147,8 @@
       timezone: formTimezone,
       holiday_country: formHolidayCountry,
       extra_holidays: formExtraHolidays,
-      file_name_pattern: 'TimeSheet_{name}_{year}.xlsx',
+      file_name_pattern: formLayoutType === 'adi' ? 'TimeSheet_ADI_{name}_{year}.xlsx' : 'TimeSheet_{name}_{year}.xlsx',
+      layout_type: formLayoutType,
       formula: {
         hours_per_manday: formHoursPerManday,
         story_point_to_manday: formStoryPointToManday,
@@ -388,6 +392,18 @@
             >
               <option value={true}>Semua Hari Kalender (1..31, Akhir pekan merah)</option>
               <option value={false}>Hanya Hari Kerja (Id dinomori ulang)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="form-layout-type-select" class="block font-medium text-slate-700">Tipe Format / Layout Lembar Excel:</label>
+            <select
+              id="form-layout-type-select"
+              bind:value={formLayoutType}
+              class="mt-1 w-full rounded border border-slate-300 p-2 text-xs"
+            >
+              <option value="default">Format Standar (PT. PASTI MAKMUR ABADI / Siloam)</option>
+              <option value="adi">Format PT. ADI Consulting (Absensi Kehadiran)</option>
             </select>
           </div>
         </div>

@@ -695,6 +695,11 @@ export interface components {
             company_logo?: string | null;
             /** Client Logo */
             client_logo?: string | null;
+            /**
+             * Layout Type
+             * @default default
+             */
+            layout_type: string;
         };
         /** TemplateSpec */
         "TemplateSpec-Output": {
@@ -762,6 +767,11 @@ export interface components {
             company_logo: string | null;
             /** Client Logo */
             client_logo: string | null;
+            /**
+             * Layout Type
+             * @default default
+             */
+            layout_type: string;
         };
         /** TimesheetDraft */
         "TimesheetDraft-Input": {

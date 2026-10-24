@@ -10,7 +10,9 @@ client = TestClient(app)
 
 
 def test_templates_and_preview_and_generate():
-    assert {t["id"] for t in client.get("/api/templates").json()} == {"default-id", "default-en"}
+    assert {"default-id", "default-en", "adi-consulting"}.issubset(
+        {t["id"] for t in client.get("/api/templates").json()}
+    )
     r = client.post("/api/timesheet/preview", json={"year": 2026, "month": 1})
     assert r.status_code == 200
     draft = r.json()

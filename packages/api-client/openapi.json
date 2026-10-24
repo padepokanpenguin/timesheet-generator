@@ -1843,6 +1843,11 @@
               }
             ],
             "title": "Client Logo"
+          },
+          "layout_type": {
+            "type": "string",
+            "title": "Layout Type",
+            "default": "default"
           }
         },
         "type": "object",
@@ -1968,6 +1973,11 @@
               }
             ],
             "title": "Client Logo"
+          },
+          "layout_type": {
+            "type": "string",
+            "title": "Layout Type",
+            "default": "default"
           }
         },
         "type": "object",
@@ -1991,7 +2001,8 @@
           "file_name_pattern",
           "formula",
           "company_logo",
-          "client_logo"
+          "client_logo",
+          "layout_type"
         ],
         "title": "TemplateSpec"
       },

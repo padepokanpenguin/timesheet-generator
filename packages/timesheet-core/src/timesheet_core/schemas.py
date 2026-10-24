@@ -51,6 +51,7 @@ class TemplateSpec(ApiModel):
     formula: FormulaConfig = Field(default_factory=FormulaConfig)
     company_logo: str | None = None
     client_logo: str | None = None
+    layout_type: str = "default"
 
 
 class StoryEntry(ApiModel):

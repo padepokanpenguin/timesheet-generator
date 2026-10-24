@@ -81,3 +81,18 @@ def test_english_template_and_footer(tmp_path):
 
 def test_file_name():
     assert file_name(get_template("default-id"), 2026) == "TimeSheet_Aria_Nur_Jamal_2026.xlsx"
+
+
+def test_adi_consulting_template_renderer(tmp_path):
+    sig = tmp_path / "sig.png"
+    Image.new("RGBA", (150, 70), (0, 0, 0, 0)).save(sig)
+    t = get_template("adi-consulting")
+    d = build_draft(year=2026, month=10, template=t, data=sample_month(2026, 10))
+    wb = load_workbook(io.BytesIO(render_timesheet(d, t, employee_signature=sig, team_lead_signature=sig)))
+    ws = wb["Absensi Kehadiran-Time Sheet"]
+    assert ws["A9"].value == "Absensi Kehadiran / Time Sheet"
+    assert ws["F1"].value == "PT. ADI Consulting"
+    assert ws["A10"].value.startswith("Nama Karyawan")
+    assert ws["A13"].value.startswith("Tanggal / Date")
+    assert any("F14:G14" in str(r) for r in ws.merged_cells.ranges)
+    assert len(ws._images) == 3  # 1 logo A1 + 2 signatures
