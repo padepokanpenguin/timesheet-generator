@@ -208,9 +208,8 @@ class JiraClient:
                 done_day = None
                 status_cat = f.get("status", {}).get("statusCategory", {}).get("key")
                 status_name = f.get("status", {}).get("name", "")
-                is_done_status = (
-                    status_cat == "done"
-                    or any(term in status_name for term in ["Completed", "Done", "Resolved", "Closed"])
+                is_done_status = status_cat == "done" or any(
+                    term in status_name for term in ["Completed", "Done", "Resolved", "Closed"]
                 )
                 if is_done_status:
                     if f.get("resolutiondate"):
@@ -238,7 +237,9 @@ class JiraClient:
                             s_d = date.fromisoformat(str(st_val)[:10])
                             e_d = date.fromisoformat(str(exp_val)[:10])
                             workday_count = sum(
-                                1 for i in range((e_d - s_d).days + 1) if (s_d + timedelta(days=i)).weekday() < 5
+                                1
+                                for i in range((e_d - s_d).days + 1)
+                                if (s_d + timedelta(days=i)).weekday() < 5
                             )
                             est_days = float(max(1, workday_count))
                         except Exception:

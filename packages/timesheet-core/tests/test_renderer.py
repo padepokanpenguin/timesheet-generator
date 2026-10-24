@@ -60,7 +60,11 @@ def test_info_text_format():
     assert "[Kairos Pas] KP2-68: FE - Setup design system package" in text
     assert " - setup package and build config" in text
     assert "[Stabilization Kairos] BPAS-5115" in text
-
+    # Verifikasi pemisahan baris baru (newline \n) untuk task ke-2
+    lines = text.split("\n")
+    assert len(lines) == 2
+    assert lines[0].startswith("[Stabilization Kairos] BPAS-5115")
+    assert lines[1].startswith("[Kairos Pas] KP2-68")
 
 def test_english_template_and_footer(tmp_path):
     sig = tmp_path / "sig.png"
@@ -72,7 +76,7 @@ def test_english_template_and_footer(tmp_path):
     footer = [(c.coordinate, c.value) for row in ws.iter_rows(min_row=46) for c in row if c.value]
     assert ("B47", "Employee") in footer and ("F47", "Team Lead") in footer
     assert ("B52", "Aria Nur Jamal") in footer and ("F52", "Kevin Saputra") in footer
-    assert len(ws._images) == 2
+    assert len(ws._images) == 4
 
 
 def test_file_name():

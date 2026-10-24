@@ -29,6 +29,7 @@ HEADER_ROW_INFO = 11
 HEADER_ROW_TABLE = 14
 FIRST_DATA_ROW = 15
 SIGNATURE_MAX_PX = (160, 70)
+ASSETS_DIR = Path(__file__).resolve().parent / "templates" / "assets"
 
 
 def _t(value: str) -> time:
@@ -37,7 +38,7 @@ def _t(value: str) -> time:
 
 
 def info_text(row: DayRow) -> str:
-    """`[Label] KEY: Judul (xx%) - aktivitas - aktivitas`, blok digabung dengan spasi."""
+    """`[Label] KEY: Judul (xx%) - aktivitas`, tiap task ke-2 dst. dipisah baris baru (\n)."""
     blocks: list[str] = []
     for s in row.stories:
         head = f"{s.key}: {s.title}"
@@ -48,7 +49,7 @@ def info_text(row: DayRow) -> str:
         blocks.append(head + "".join(f" - {a}" for a in s.activities))
     if row.free_text:
         blocks.append(row.free_text)
-    return " ".join(blocks)
+    return "\n".join(blocks)
 
 
 def _style(cell, *, bold=False, color=None, fill=None, align=CENTER, border=True):
@@ -86,10 +87,29 @@ def render_timesheet(
     for col, width in COL_WIDTHS.items():
         ws.column_dimensions[col].width = width
 
-    # Baris 1-8 dibiarkan kosong (area logo pada template referensi).
+    # Baris 1-7: area logo template referensi (kolom B:D)
+    company_logo_name = template.company_logo or (
+        "pasti_logo.png" if "PASTI" in template.company_name.upper() else None
+    )
+    if company_logo_name:
+        logo_path = ASSETS_DIR / company_logo_name
+        if logo_path.exists():
+            img0 = XLImage(str(logo_path))
+            img0.width, img0.height = 138, 135
+            ws.add_image(img0, "B1")
+
+    client_logo_name = template.client_logo or (
+        "siloam_logo.png" if "SILOAM" in template.client.upper() else None
+    )
+    if client_logo_name:
+        client_logo_path = ASSETS_DIR / client_logo_name
+        if client_logo_path.exists():
+            img1 = XLImage(str(client_logo_path))
+            img1.width, img1.height = 465, 126
+            ws.add_image(img1, "D1")
+
     ws["A9"] = template.company_name
     ws["A9"].font = Font(name=FONT, size=12, bold=True)
-
     # Header info (baris 11-12)
     ws.merge_cells("A11:B11")
     ws.merge_cells("A12:B12")
@@ -157,8 +177,8 @@ def render_timesheet(
                 ws.cell(r, 5, hours).number_format = "0.##"
             text = info_text(row)
             ws.cell(r, 6, text)
-            lines = max(1, math.ceil(len(text) / 105)) if text else 1
-            ws.row_dimensions[r].height = max(15, 14 * lines)
+            line_count = sum(max(1, math.ceil(len(line) / 95)) for line in text.split("\n")) if text else 1
+            ws.row_dimensions[r].height = max(18, 15 * line_count)
         r += 1
 
     # Footer: tanda tangan

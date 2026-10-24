@@ -103,7 +103,7 @@ export interface paths {
         put?: never;
         /**
          * Upload Signature
-         * @description Employee diunggah karyawan; Team Lead diunggah Team Lead sendiri (TODO: cek peran).
+         * @description Employee diunggah karyawan; Team Lead diunggah Team Lead sendiri.
          */
         post: operations["upload_signature_api_signatures__role__post"];
         /** Delete Signature */
@@ -125,6 +125,93 @@ export interface paths {
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Auth Logout */
+        post: operations["auth_logout_api_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Auth Login */
+        post: operations["auth_login_api_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Auth Me */
+        get: operations["auth_me_api_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Admin List Users */
+        get: operations["admin_list_users_api_admin_users_get"];
+        put?: never;
+        /** Admin Create User */
+        post: operations["admin_create_user_api_admin_users_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/users/{user_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Admin Update User */
+        put: operations["admin_update_user_api_admin_users__user_id__put"];
+        post?: never;
+        /** Admin Delete User */
+        delete: operations["admin_delete_user_api_admin_users__user_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -185,6 +272,17 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AuthResponse */
+        AuthResponse: {
+            /** Token */
+            token: string;
+            user: components["schemas"]["UserPublic"];
+            /**
+             * Message
+             * @default Login berhasil
+             */
+            message: string;
+        };
         /** Body_upload_signature_api_signatures__role__post */
         Body_upload_signature_api_signatures__role__post: {
             /** File */
@@ -395,8 +493,21 @@ export interface components {
             site_url: string | null;
             /** Email */
             email: string | null;
+            /** Display Name */
+            display_name: string | null;
+            /** Account Id */
+            account_id: string | null;
+            /** Token */
+            token: string | null;
             /** Message */
             message: string | null;
+        };
+        /** LoginRequest */
+        LoginRequest: {
+            /** Username Or Email */
+            username_or_email: string;
+            /** Password */
+            password: string;
         };
         /** PreviewRequest */
         PreviewRequest: {
@@ -580,6 +691,10 @@ export interface components {
              */
             file_name_pattern: string;
             formula?: components["schemas"]["FormulaConfig-Input"];
+            /** Company Logo */
+            company_logo?: string | null;
+            /** Client Logo */
+            client_logo?: string | null;
         };
         /** TemplateSpec */
         "TemplateSpec-Output": {
@@ -643,6 +758,10 @@ export interface components {
              */
             file_name_pattern: string;
             formula: components["schemas"]["FormulaConfig-Output"];
+            /** Company Logo */
+            company_logo: string | null;
+            /** Client Logo */
+            client_logo: string | null;
         };
         /** TimesheetDraft */
         "TimesheetDraft-Input": {
@@ -681,6 +800,87 @@ export interface components {
             story_end_state: {
                 [key: string]: components["schemas"]["StoryState-Output"];
             };
+        };
+        /** UserAccountCreate */
+        UserAccountCreate: {
+            /** Username */
+            username: string;
+            /** Email */
+            email: string;
+            /** Display Name */
+            display_name: string;
+            /** Password */
+            password: string;
+            /**
+             * Role
+             * @default developer
+             * @enum {string}
+             */
+            role: "developer" | "team_lead" | "admin";
+            /**
+             * Template Id
+             * @default default-id
+             */
+            template_id: string;
+            /**
+             * Jira Api Token
+             * @default
+             */
+            jira_api_token: string;
+            /**
+             * Jira Site Url
+             * @default https://ict-siloamhospitals.atlassian.net
+             */
+            jira_site_url: string;
+        };
+        /** UserAccountUpdate */
+        UserAccountUpdate: {
+            /** Email */
+            email?: string | null;
+            /** Display Name */
+            display_name?: string | null;
+            /** Password */
+            password?: string | null;
+            /** Role */
+            role?: ("developer" | "team_lead" | "admin") | null;
+            /** Template Id */
+            template_id?: string | null;
+            /** Jira Api Token */
+            jira_api_token?: string | null;
+            /** Jira Site Url */
+            jira_site_url?: string | null;
+        };
+        /** UserPublic */
+        UserPublic: {
+            /** Id */
+            id: string;
+            /** Username */
+            username: string;
+            /** Email */
+            email: string;
+            /** Display Name */
+            display_name: string;
+            /**
+             * Role
+             * @default developer
+             * @enum {string}
+             */
+            role: "developer" | "team_lead" | "admin";
+            /**
+             * Template Id
+             * @default default-id
+             */
+            template_id: string;
+            /**
+             * Jira Site Url
+             * @default https://ict-siloamhospitals.atlassian.net
+             */
+            jira_site_url: string;
+            /**
+             * Has Api Token
+             * @default false
+             */
+            has_api_token: boolean;
         };
         /** ValidationError */
         ValidationError: {
@@ -855,7 +1055,9 @@ export interface operations {
     preview_api_timesheet_preview_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -888,7 +1090,9 @@ export interface operations {
     generate_api_timesheet_generate_post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -921,7 +1125,9 @@ export interface operations {
     signature_status_api_signatures_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -936,12 +1142,23 @@ export interface operations {
                     "application/json": components["schemas"]["SignatureStatus"];
                 };
             };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
         };
     };
     upload_signature_api_signatures__role__post: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+            };
             path: {
                 role: string;
             };
@@ -974,7 +1191,9 @@ export interface operations {
     delete_signature_api_signatures__role__delete: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+            };
             path: {
                 role: string;
             };
@@ -1003,7 +1222,9 @@ export interface operations {
     jira_status_api_jira_status_get: {
         parameters: {
             query?: never;
-            header?: never;
+            header?: {
+                Authorization?: string | null;
+            };
             path?: never;
             cookie?: never;
         };
@@ -1016,6 +1237,242 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["JiraStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    auth_logout_api_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    auth_login_api_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    auth_me_api_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_list_users_api_admin_users_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPublic"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_create_user_api_admin_users_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserAccountCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_update_user_api_admin_users__user_id__put: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+            };
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserAccountUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserPublic"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    admin_delete_user_api_admin_users__user_id__delete: {
+        parameters: {
+            query?: never;
+            header?: {
+                Authorization?: string | null;
+            };
+            path: {
+                user_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

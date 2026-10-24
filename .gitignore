@@ -3,12 +3,37 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 .venv/
-# Node
+*.pyc
+*.pyo
+*.pyd
+
+# Node & Build
 node_modules/
 .svelte-kit/
 build/
 .turbo/
-# Lokal
+dist/
+
+# File Rahasia & Environment Lokal
 .env
+.env.*
+!.env.example
+
+# Penyimpanan Runtime & Data Pengguna
 storage/
+
+# Dokumen Perusahaan, Desain Sistem, Prompt AI, & Referensi Excel
 docs/
+*.md
+!README.md
+*.xlsx
+*.xls
+
+# Asset Logo, Gambar, dan File Ekstraksi Perusahaan
+extracted_img_*
+*.png
+*.jpg
+*.jpeg
+*.gif
+/packages/timesheet-core/src/timesheet_core/templates/assets/
+/apps/web/static/logos/

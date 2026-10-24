@@ -55,5 +55,5 @@ export function formatInformationActivity(stories: StoryEntry[], freeText?: stri
   if (freeText && freeText.trim()) {
     blocks.push(freeText.trim());
   }
-  return blocks.join(' ');
+  return blocks.join('\n');
 }

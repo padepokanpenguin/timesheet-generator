@@ -2,55 +2,61 @@
   import '../app.css';
   import { page } from '$app/state';
   import { onMount } from 'svelte';
-  import { getJiraStatus, connectJira, type JiraStatus } from '@timesheet/api-client';
+  import { getAuthMe, login, logout, type UserPublic } from '@timesheet/api-client';
 
   interface Props {
     children: any;
   }
   let { children }: Props = $props();
 
-  let jiraStatus = $state<JiraStatus>({ connected: false, site_url: null, email: null, message: null });
-  let isCheckingJira = $state(true);
-  let showConnectModal = $state(false);
+  let currentUser = $state<UserPublic | null>(null);
+  let isCheckingAuth = $state(true);
+  let showLoginModal = $state(false);
 
-  // Jira Connect form
-  let siteUrl = $state('https://perusahaan.atlassian.net');
-  let email = $state('developer@example.com');
-  let apiToken = $state('');
-  let connectError = $state('');
-  let isConnecting = $state(false);
+  // Login form state
+  let loginUsernameOrEmail = $state('');
+  let loginPassword = $state('');
+  let loginError = $state('');
+  let isLoggingIn = $state(false);
 
-  async function checkStatus() {
+  async function checkUserAuth() {
     try {
-      jiraStatus = await getJiraStatus();
+      currentUser = await getAuthMe();
     } catch {
-      jiraStatus = { connected: false, site_url: null, email: null, message: 'Gagal terhubung ke API backend' };
+      currentUser = null;
     } finally {
-      isCheckingJira = false;
+      isCheckingAuth = false;
     }
   }
 
   onMount(() => {
-    checkStatus();
+    checkUserAuth();
   });
 
-  async function handleConnectSubmit(e: SubmitEvent) {
+  async function handleLoginSubmit(e: SubmitEvent) {
     e.preventDefault();
-    connectError = '';
-    isConnecting = true;
+    loginError = '';
+    isLoggingIn = true;
     try {
-      jiraStatus = await connectJira({
-        site_url: siteUrl,
-        email,
-        api_token: apiToken
+      const res = await login({
+        username_or_email: loginUsernameOrEmail,
+        password: loginPassword
       });
-      showConnectModal = false;
-      apiToken = '';
+      currentUser = res.user;
+      showLoginModal = false;
+      loginPassword = '';
+      window.location.reload();
     } catch (err) {
-      connectError = err instanceof Error ? err.message : 'Koneksi ke Jira gagal.';
+      loginError = err instanceof Error ? err.message : 'Login gagal. Akun dibuat dan dikelola oleh Admin.';
     } finally {
-      isConnecting = false;
+      isLoggingIn = false;
     }
+  }
+
+  async function handleLogout() {
+    await logout();
+    currentUser = null;
+    window.location.reload();
   }
 </script>
 
@@ -85,30 +91,53 @@
         >
           Profil & Tanda Tangan
         </a>
-        <a
-          href="/admin/templates"
-          class="rounded-md px-3 py-1.5 text-xs font-medium transition {page.url.pathname.startsWith('/admin') ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}"
-        >
-          Template & Kalender Admin
-        </a>
+        {#if currentUser && currentUser.role === 'admin'}
+          <a
+            href="/admin/templates"
+            class="rounded-md px-3 py-1.5 text-xs font-medium transition {page.url.pathname === '/admin/templates' ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}"
+          >
+            Template & Kalender Admin
+          </a>
+          <a
+            href="/admin/users"
+            class="rounded-md px-3 py-1.5 text-xs font-medium transition {page.url.pathname === '/admin/users' ? 'bg-primary-50 text-primary-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}"
+          >
+            Kelola Akun Pengguna
+          </a>
+        {/if}
       </nav>
 
-      <!-- Right: Jira Cloud Status -->
+      <!-- Right: User Session / Login Status -->
       <div class="flex items-center gap-3">
-        {#if isCheckingJira}
-          <span class="text-[11px] text-slate-400">Memeriksa koneksi Jira...</span>
-        {:else if jiraStatus.connected}
-          <div class="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs text-emerald-800">
-            <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="font-medium">Jira: {jiraStatus.email || 'Connected'}</span>
+        {#if isCheckingAuth}
+          <span class="text-[11px] text-slate-400">Memeriksa sesi...</span>
+        {:else if currentUser}
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs text-emerald-800">
+              <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+              <span class="font-medium" title={currentUser.email}>
+                {currentUser.display_name}
+              </span>
+              <span class="rounded bg-emerald-100 px-1 text-[10px] uppercase font-semibold text-emerald-800">
+                {currentUser.role}
+              </span>
+            </div>
+            <button
+              type="button"
+              onclick={handleLogout}
+              class="rounded border border-slate-200 bg-white px-2 py-1 text-[11px] text-slate-600 shadow-2xs hover:bg-slate-50 hover:text-red-600"
+              title="Keluar dari akun"
+            >
+              Logout
+            </button>
           </div>
         {:else}
           <button
             type="button"
-            onclick={() => (showConnectModal = true)}
-            class="flex items-center gap-1.5 rounded-md bg-primary-600 px-3 py-1 text-xs font-medium text-white shadow-xs hover:bg-primary-700"
+            onclick={() => (showLoginModal = true)}
+            class="flex items-center gap-1.5 rounded-md bg-primary-600 px-3.5 py-1.5 text-xs font-medium text-white shadow-xs hover:bg-primary-700"
           >
-            Hubungkan Jira
+            Login dengan Jira
           </button>
         {/if}
       </div>
@@ -120,8 +149,8 @@
     {@render children()}
   </main>
 
-  <!-- Connect Jira Modal -->
-  {#if showConnectModal}
+  <!-- Login Modal (Hanya login, akun dibuat oleh admin) -->
+  {#if showLoginModal}
     <div
       class="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
@@ -130,77 +159,76 @@
       <button
         type="button"
         class="fixed inset-0 bg-slate-900/40 backdrop-blur-2xs"
-        onclick={() => (showConnectModal = false)}
+        onclick={() => (showLoginModal = false)}
         aria-label="Tutup modal"
       ></button>
 
       <div class="relative z-10 w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-2xl">
         <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-          <h3 class="text-sm font-bold text-slate-900">Hubungkan Akun Jira Cloud</h3>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Login Pengguna Jira Timesheet</h3>
+            <p class="text-[11px] text-slate-500">Akun pengguna dibuat dan dikelola oleh Admin.</p>
+          </div>
           <button
             type="button"
-            onclick={() => (showConnectModal = false)}
+            onclick={() => (showLoginModal = false)}
             class="rounded p-1 text-slate-400 hover:bg-slate-100"
           >
             ✕
           </button>
         </div>
 
-        <form onsubmit={handleConnectSubmit} class="mt-4 space-y-3 text-xs">
+        <form onsubmit={handleLoginSubmit} class="mt-4 space-y-3.5 text-xs">
           <div>
-            <label for="jira-site-url" class="block font-medium text-slate-700">Jira Site URL:</label>
+            <label for="login-username" class="block font-medium text-slate-700">Username atau Email Jira:</label>
             <input
-              id="jira-site-url"
-              type="url"
-              bind:value={siteUrl}
+              id="login-username"
+              type="text"
+              bind:value={loginUsernameOrEmail}
               required
               class="mt-1 w-full rounded border border-slate-300 p-2 text-xs text-slate-900 focus:border-primary-500 focus:outline-hidden"
-              placeholder="https://perusahaan.atlassian.net"
+              placeholder="misal: admin atau developer"
             />
           </div>
 
           <div>
-            <label for="jira-email" class="block font-medium text-slate-700">Atlassian Email:</label>
+            <label for="login-password" class="block font-medium text-slate-700">Password:</label>
             <input
-              id="jira-email"
-              type="email"
-              bind:value={email}
-              required
-              class="mt-1 w-full rounded border border-slate-300 p-2 text-xs text-slate-900 focus:border-primary-500 focus:outline-hidden"
-              placeholder="nama@perusahaan.com"
-            />
-          </div>
-
-          <div>
-            <label for="jira-api-token" class="block font-medium text-slate-700">Atlassian API Token:</label>
-            <input
-              id="jira-api-token"
+              id="login-password"
               type="password"
-              bind:value={apiToken}
+              bind:value={loginPassword}
               required
               class="mt-1 w-full rounded border border-slate-300 p-2 text-xs text-slate-900 focus:border-primary-500 focus:outline-hidden"
-              placeholder="API Token dari Atlassian Account Security"
+              placeholder="Masukkan password akun Anda"
             />
           </div>
 
-          {#if connectError}
-            <p class="text-xs text-red-600">⚠ {connectError}</p>
+          <div class="rounded-lg bg-slate-50 p-2.5 text-[11px] text-slate-500">
+            <span class="font-medium text-slate-700">Akun bawaan sistem:</span>
+            <ul class="mt-1 list-disc pl-4 space-y-0.5">
+              <li><strong>admin</strong> / password: <code>admin123</code> (Admin PMO)</li>
+              <li><strong>developer</strong> / password: <code>dev123</code> (Developer)</li>
+            </ul>
+          </div>
+
+          {#if loginError}
+            <p class="text-xs text-red-600">⚠ {loginError}</p>
           {/if}
 
           <div class="flex justify-end gap-2 pt-2">
             <button
               type="button"
-              onclick={() => (showConnectModal = false)}
-              class="rounded border border-slate-300 px-3 py-1.5 text-slate-600 hover:bg-slate-50"
+              onclick={() => (showLoginModal = false)}
+              class="rounded border border-slate-300 px-3.5 py-1.5 text-slate-600 hover:bg-slate-50"
             >
               Batal
             </button>
             <button
               type="submit"
-              disabled={isConnecting}
+              disabled={isLoggingIn}
               class="rounded bg-primary-600 px-4 py-1.5 font-medium text-white shadow-xs hover:bg-primary-700 disabled:bg-slate-300"
             >
-              {isConnecting ? 'Menghubungkan...' : 'Simpan & Hubungkan'}
+              {isLoggingIn ? 'Memeriksa...' : 'Login'}
             </button>
           </div>
         </form>

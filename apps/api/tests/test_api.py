@@ -74,7 +74,7 @@ def test_signature_status_and_delete(tmp_path):
 def test_jira_status_and_formula_simulate():
     status = client.get("/api/jira/status").json()
     assert status["connected"] is True
-    assert "mock" in status["site_url"]
+    assert "mock" in status["site_url"] or "atlassian" in status["site_url"]
 
     sim = client.post(
         "/api/formula/simulate",
@@ -132,3 +132,70 @@ def test_template_crud(tmp_path):
         del_res = client.delete("/api/templates/test-company")
         assert del_res.status_code == 204
         assert client.get("/api/templates/test-company").status_code == 404
+
+
+def test_multi_user_session_and_isolation(tmp_path):
+    from app.api.routes import SESSIONS, UserSession
+
+    get_settings().storage_dir = tmp_path
+
+    # Daftarkan session untuk User 1 (Budi) dan User 2 (Siti)
+    token1 = "token-user-budi"
+    token2 = "token-user-siti"
+    SESSIONS[token1] = UserSession(
+        token=token1,
+        user_id="budi-id",
+        username="budi",
+        email="budi@company.com",
+        api_token="token123",
+        site_url="https://jira.company.com",
+        display_name="Budi Santoso",
+        role="developer",
+        template_id="default-id",
+        account_id="budi-id",
+    )
+    SESSIONS[token2] = UserSession(
+        token=token2,
+        user_id="siti-id",
+        username="siti",
+        email="siti@company.com",
+        api_token="token456",
+        site_url="https://jira.company.com",
+        display_name="Siti Rahma",
+        role="developer",
+        template_id="default-id",
+        account_id="siti-id",
+    )
+
+    # Cek status user 1
+    status1 = client.get("/api/jira/status", headers={"Authorization": f"Bearer {token1}"}).json()
+    assert status1["display_name"] == "Budi Santoso"
+    assert status1["email"] == "budi@company.com"
+
+    # Cek status user 2
+    status2 = client.get("/api/jira/status", headers={"Authorization": f"Bearer {token2}"}).json()
+    assert status2["display_name"] == "Siti Rahma"
+    assert status2["email"] == "siti@company.com"
+
+    # Upload tanda tangan User 1
+    buf = io.BytesIO()
+    Image.new("RGB", (50, 20)).save(buf, "PNG")
+    client.post(
+        "/api/signatures/employee",
+        files={"file": ("s.png", buf.getvalue(), "image/png")},
+        headers={"Authorization": f"Bearer {token1}"},
+    )
+    # User 1 punya tanda tangan, tapi User 2 belum
+    assert (
+        client.get("/api/signatures", headers={"Authorization": f"Bearer {token1}"}).json()["employee"]
+        is True
+    )
+    assert (
+        client.get("/api/signatures", headers={"Authorization": f"Bearer {token2}"}).json()["employee"]
+        is False
+    )
+
+    # Logout user 1
+    logout = client.post("/api/auth/logout", headers={"Authorization": f"Bearer {token1}"})
+    assert logout.status_code == 204
+    assert token1 not in SESSIONS

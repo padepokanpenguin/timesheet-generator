@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { DayRow, TemplateSpec, StoryEntry } from '@timesheet/api-client';
-  import { formatDateDisplay, getDayName, formatInformationActivity } from '$lib/utils/formatters';
+  import { formatDateDisplay, getDayName, formatInformationActivity, formatPeriod } from '$lib/utils/formatters';
   import ActivityBlockItem from './ActivityBlockItem.svelte';
 
   interface Props {
@@ -46,6 +46,49 @@
 </script>
 
 <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs {excelPreviewMode ? 'font-excel' : ''}">
+  {#if excelPreviewMode}
+    <!-- Area Logo & Header Excel (Baris 1-12) -->
+    <div class="border-b border-slate-200 bg-white p-5">
+      <!-- Baris 1-7: Area Logo Header -->
+      <div class="flex items-center gap-8 py-2">
+        <div class="flex items-center">
+          <img src="/logos/pasti_logo.png" alt="Logo PT. Pasti Makmur Abadi" class="h-16 w-auto object-contain" />
+        </div>
+        <div class="flex items-center">
+          <img src="/logos/siloam_logo.png" alt="Logo Siloam Hospitals" class="h-14 w-auto object-contain" />
+        </div>
+      </div>
+
+      <!-- Baris 9: Nama Perusahaan -->
+      <div class="mt-4 text-sm font-bold text-slate-900">
+        {template.company_name}
+      </div>
+
+      <!-- Baris 11-12: Header Info Sheet -->
+      <div class="mt-3 overflow-hidden rounded border border-slate-300 text-center text-xs">
+        <div class="grid grid-cols-6 bg-black py-1 font-bold text-white">
+          <div class="col-span-2 border-r border-slate-700">Title</div>
+          <div class="border-r border-slate-700">Name</div>
+          <div class="border-r border-slate-700">Company</div>
+          <div class="border-r border-slate-700">Dept</div>
+          <div>{lang === 'en' ? 'Period' : 'Periode'}</div>
+        </div>
+        <div class="grid grid-cols-6 border-t border-slate-200 bg-white py-1.5 text-slate-900">
+          <div class="col-span-2 border-r border-slate-200 font-medium">{template.title}</div>
+          <div class="border-r border-slate-200">{template.employee_name}</div>
+          <div class="border-r border-slate-200">{template.client}</div>
+          <div class="border-r border-slate-200">{template.department}</div>
+          <div class="font-medium">
+            {formatPeriod(
+              rows[0] ? Number(rows[0].date.split('-')[0]) : 2026,
+              rows[0] ? Number(rows[0].date.split('-')[1]) : 10,
+              lang
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  {/if}
   <div class="overflow-x-auto">
     <table class="w-full border-collapse text-left text-xs">
       <!-- Excel / Table Header -->

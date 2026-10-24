@@ -49,6 +49,8 @@ class TemplateSpec(ApiModel):
     extra_holidays: list[date] = Field(default_factory=list)
     file_name_pattern: str = "TimeSheet_{name}_{year}.xlsx"
     formula: FormulaConfig = Field(default_factory=FormulaConfig)
+    company_logo: str | None = None
+    client_logo: str | None = None
 
 
 class StoryEntry(ApiModel):
@@ -117,6 +119,9 @@ class JiraStatus(ApiModel):
     connected: bool = False
     site_url: str | None = None
     email: str | None = None
+    display_name: str | None = None
+    account_id: str | None = None
+    token: str | None = None
     message: str | None = None
 
 
@@ -138,3 +143,49 @@ class FormulaSimulateRequest(ApiModel):
 class FormulaSimulateResponse(ApiModel):
     total_progress: int | None
     daily_percentages: list[int]
+
+
+UserRole = Literal["developer", "team_lead", "admin"]
+
+
+class LoginRequest(ApiModel):
+    username_or_email: str
+    password: str
+
+
+class UserPublic(ApiModel):
+    id: str
+    username: str
+    email: str
+    display_name: str
+    role: UserRole = "developer"
+    template_id: str = "default-id"
+    jira_site_url: str = "https://ict-siloamhospitals.atlassian.net"
+    has_api_token: bool = False
+
+
+class AuthResponse(ApiModel):
+    token: str
+    user: UserPublic
+    message: str = "Login berhasil"
+
+
+class UserAccountCreate(ApiModel):
+    username: str
+    email: str
+    display_name: str
+    password: str
+    role: UserRole = "developer"
+    template_id: str = "default-id"
+    jira_api_token: str = ""
+    jira_site_url: str = "https://ict-siloamhospitals.atlassian.net"
+
+
+class UserAccountUpdate(ApiModel):
+    email: str | None = None
+    display_name: str | None = None
+    password: str | None = None
+    role: UserRole | None = None
+    template_id: str | None = None
+    jira_api_token: str | None = None
+    jira_site_url: str | None = None

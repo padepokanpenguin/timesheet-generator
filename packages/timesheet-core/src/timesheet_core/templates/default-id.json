@@ -16,6 +16,8 @@
   "holiday_country": "ID",
   "extra_holidays": [],
   "file_name_pattern": "TimeSheet_{name}_{year}.xlsx",
+  "company_logo": "pasti_logo.png",
+  "client_logo": "siloam_logo.png",
   "formula": {
     "hours_per_manday": 8,
     "story_point_to_manday": 1,
