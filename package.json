@@ -1,6 +1,7 @@
 {
   "name": "jira-timesheet",
   "private": true,
+  "license": "MIT",
   "packageManager": "pnpm@12.15.0",
   "scripts": {
     "dev": "turbo run dev --parallel",
