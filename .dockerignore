@@ -1,0 +1,13 @@
+**/node_modules
+**/.svelte-kit
+**/build
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/*.pyc
+**/*.pyo
+**/*.pyd
+.git
+.turbo
+storage

@@ -1,0 +1,28 @@
+{
+  "id": "default-en",
+  "name": "Default (English)",
+  "language": "en",
+  "company_name": "PT. PASTI MAKMUR ABADI",
+  "client": "Siloam Hospital",
+  "department": "IT",
+  "title": "Fullstack Developer",
+  "employee_name": "Aria Nur Jamal",
+  "team_lead_name": "Kevin Saputra",
+  "work_start": "08:30",
+  "work_end": "17:30",
+  "break_minutes": 60,
+  "show_all_days": true,
+  "timezone": "Asia/Jakarta",
+  "holiday_country": "ID",
+  "extra_holidays": [],
+  "file_name_pattern": "TimeSheet_{name}_{year}.xlsx",
+  "formula": {
+    "hours_per_manday": 8,
+    "story_point_to_manday": 1,
+    "max_progress_before_done": 95,
+    "rounding_step": 5,
+    "min_daily_portion": 5,
+    "segmentation_mode": "random",
+    "carry_over_between_months": true
+  }
+}

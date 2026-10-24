@@ -1,0 +1,30 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --all-packages --frozen
+      - run: uv run --all-packages ruff check .
+      - run: uv run --all-packages ruff format --check .
+      - run: uv run --all-packages pytest
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: uv sync --all-packages --frozen
+      - run: pnpm install --frozen-lockfile
+      # Tipe TS harus sinkron dengan OpenAPI backend
+      - run: pnpm gen:api && git diff --exit-code packages/api-client
+      - run: pnpm check
+      - run: pnpm build

@@ -1,0 +1,13 @@
+packages:
+  - "apps/web"
+  - "packages/api-client"
+
+# Pin transitif: uri-js-replace 1.0.2 baru terbit (< minimumReleaseAge pnpm), 1.0.1 aman.
+allowBuilds:
+  esbuild: true
+
+onlyBuiltDependencies:
+  - esbuild
+
+overrides:
+  uri-js-replace: 1.0.1

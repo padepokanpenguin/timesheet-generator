@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-excel: 'Arial', sans-serif;
+
+  --color-primary-50: #deebff;
+  --color-primary-100: #b3d4ff;
+  --color-primary-500: #0065ff;
+  --color-primary-600: #0052cc;
+  --color-primary-700: #0747a6;
+
+  --color-excel-header: #000000;
+  --color-excel-red-raw: #ff0000;
+  --color-excel-red-surface: #fee2e2;
+  --color-excel-red-border: #ef4444;
+  --color-excel-red-text: #991b1b;
+}
+
+html {
+  color-scheme: light;
+  font-family: var(--font-sans);
+}
+
+.font-excel {
+  font-family: var(--font-excel);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.bg-checkerboard {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(45deg, #f1f5f9 25%, transparent 25%),
+    linear-gradient(-45deg, #f1f5f9 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f1f5f9 75%),
+    linear-gradient(-45deg, transparent 75%, #f1f5f9 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}

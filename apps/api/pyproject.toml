@@ -1,0 +1,20 @@
+[project]
+name = "timesheet-api"
+version = "0.1.0"
+description = "FastAPI service untuk Jira Timesheet Auto-Generator"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "pydantic-settings>=2.3",
+  "python-multipart>=0.0.9",
+  "timesheet-core",
+  "jira-client",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+timesheet-core = { workspace = true }
+jira-client = { workspace = true }

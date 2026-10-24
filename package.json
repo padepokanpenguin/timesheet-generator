@@ -1,0 +1,21 @@
+{
+  "name": "jira-timesheet",
+  "private": true,
+  "packageManager": "pnpm@12.15.0",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "check": "turbo run check",
+    "gen:api": "pnpm run export:openapi && pnpm --filter @timesheet/api-client gen",
+    "export:openapi": "cd apps/api && uv run --all-packages python -m app.export_openapi > ../../packages/api-client/openapi.json",
+    "test": "uv run --all-packages pytest",
+    "lint": "uv run --all-packages ruff check . && uv run --all-packages ruff format --check ."
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  }
+}

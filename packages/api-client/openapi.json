@@ -1,0 +1,1562 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Jira Timesheet Auto-Generator",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/templates": {
+      "get": {
+        "summary": "Templates",
+        "operationId": "templates_api_templates_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TemplateSpec-Output"
+                  },
+                  "type": "array",
+                  "title": "Response Templates Api Templates Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create Template",
+        "operationId": "create_template_api_templates_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplateSpec-Input"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateSpec-Output"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/templates/{template_id}": {
+      "get": {
+        "summary": "Get Single Template",
+        "operationId": "get_single_template_api_templates__template_id__get",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Template Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateSpec-Output"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update Template",
+        "operationId": "update_template_api_templates__template_id__put",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Template Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplateSpec-Input"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateSpec-Output"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove Template",
+        "operationId": "remove_template_api_templates__template_id__delete",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Template Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/timesheet/preview": {
+      "post": {
+        "summary": "Preview",
+        "operationId": "preview_api_timesheet_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimesheetDraft-Output"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/timesheet/generate": {
+      "post": {
+        "summary": "Generate",
+        "operationId": "generate_api_timesheet_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/signatures": {
+      "get": {
+        "summary": "Signature Status",
+        "operationId": "signature_status_api_signatures_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignatureStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/signatures/{role}": {
+      "delete": {
+        "summary": "Delete Signature",
+        "operationId": "delete_signature_api_signatures__role__delete",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Role"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Upload Signature",
+        "description": "Employee diunggah karyawan; Team Lead diunggah Team Lead sendiri (TODO: cek peran).",
+        "operationId": "upload_signature_api_signatures__role__post",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Role"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_signature_api_signatures__role__post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jira/status": {
+      "get": {
+        "summary": "Jira Status",
+        "operationId": "jira_status_api_jira_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JiraStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/jira/connect": {
+      "post": {
+        "summary": "Jira Connect",
+        "operationId": "jira_connect_api_jira_connect_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JiraConnectRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JiraStatus"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/formula/simulate": {
+      "post": {
+        "summary": "Simulate Formula",
+        "operationId": "simulate_formula_api_formula_simulate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FormulaSimulateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FormulaSimulateResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health Api Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Body_upload_signature_api_signatures__role__post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_signature_api_signatures__role__post"
+      },
+      "DayRow-Input": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "work",
+              "weekend",
+              "holiday",
+              "leave"
+            ],
+            "title": "Kind",
+            "default": "work"
+          },
+          "time_in": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time In"
+          },
+          "time_out": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Out"
+          },
+          "working_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Working Hours"
+          },
+          "stories": {
+            "items": {
+              "$ref": "#/components/schemas/StoryEntry-Input"
+            },
+            "type": "array",
+            "title": "Stories"
+          },
+          "free_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Text"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Blockers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "title": "DayRow"
+      },
+      "DayRow-Output": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "work",
+              "weekend",
+              "holiday",
+              "leave"
+            ],
+            "title": "Kind",
+            "default": "work"
+          },
+          "time_in": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time In"
+          },
+          "time_out": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Time Out"
+          },
+          "working_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Working Hours"
+          },
+          "stories": {
+            "items": {
+              "$ref": "#/components/schemas/StoryEntry-Output"
+            },
+            "type": "array",
+            "title": "Stories"
+          },
+          "free_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Text"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Blockers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "kind",
+          "time_in",
+          "time_out",
+          "working_hours",
+          "stories",
+          "free_text",
+          "warnings",
+          "blockers"
+        ],
+        "title": "DayRow"
+      },
+      "FormulaConfig-Input": {
+        "properties": {
+          "hours_per_manday": {
+            "type": "number",
+            "title": "Hours Per Manday",
+            "default": 8.0
+          },
+          "story_point_to_manday": {
+            "type": "number",
+            "title": "Story Point To Manday",
+            "default": 1.0
+          },
+          "max_progress_before_done": {
+            "type": "integer",
+            "title": "Max Progress Before Done",
+            "default": 95
+          },
+          "rounding_step": {
+            "type": "integer",
+            "title": "Rounding Step",
+            "default": 5
+          },
+          "min_daily_portion": {
+            "type": "integer",
+            "title": "Min Daily Portion",
+            "default": 5
+          },
+          "segmentation_mode": {
+            "type": "string",
+            "enum": [
+              "random",
+              "manual"
+            ],
+            "title": "Segmentation Mode",
+            "default": "random"
+          },
+          "carry_over_between_months": {
+            "type": "boolean",
+            "title": "Carry Over Between Months",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "FormulaConfig",
+        "description": "Parameter formula persentase (dikelola admin di template)."
+      },
+      "FormulaConfig-Output": {
+        "properties": {
+          "hours_per_manday": {
+            "type": "number",
+            "title": "Hours Per Manday",
+            "default": 8.0
+          },
+          "story_point_to_manday": {
+            "type": "number",
+            "title": "Story Point To Manday",
+            "default": 1.0
+          },
+          "max_progress_before_done": {
+            "type": "integer",
+            "title": "Max Progress Before Done",
+            "default": 95
+          },
+          "rounding_step": {
+            "type": "integer",
+            "title": "Rounding Step",
+            "default": 5
+          },
+          "min_daily_portion": {
+            "type": "integer",
+            "title": "Min Daily Portion",
+            "default": 5
+          },
+          "segmentation_mode": {
+            "type": "string",
+            "enum": [
+              "random",
+              "manual"
+            ],
+            "title": "Segmentation Mode",
+            "default": "random"
+          },
+          "carry_over_between_months": {
+            "type": "boolean",
+            "title": "Carry Over Between Months",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "hours_per_manday",
+          "story_point_to_manday",
+          "max_progress_before_done",
+          "rounding_step",
+          "min_daily_portion",
+          "segmentation_mode",
+          "carry_over_between_months"
+        ],
+        "title": "FormulaConfig",
+        "description": "Parameter formula persentase (dikelola admin di template)."
+      },
+      "FormulaSimulateRequest": {
+        "properties": {
+          "formula": {
+            "$ref": "#/components/schemas/FormulaConfig-Input"
+          },
+          "estimate_mandays": {
+            "type": "number",
+            "title": "Estimate Mandays",
+            "default": 4.0
+          },
+          "active_days": {
+            "type": "integer",
+            "title": "Active Days",
+            "default": 3
+          },
+          "done": {
+            "type": "boolean",
+            "title": "Done",
+            "default": false
+          },
+          "start_percent": {
+            "type": "integer",
+            "title": "Start Percent",
+            "default": 0
+          },
+          "seed": {
+            "type": "string",
+            "title": "Seed",
+            "default": "simulation-seed"
+          }
+        },
+        "type": "object",
+        "title": "FormulaSimulateRequest"
+      },
+      "FormulaSimulateResponse": {
+        "properties": {
+          "total_progress": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total Progress"
+          },
+          "daily_percentages": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Daily Percentages"
+          }
+        },
+        "type": "object",
+        "required": [
+          "total_progress",
+          "daily_percentages"
+        ],
+        "title": "FormulaSimulateResponse"
+      },
+      "GenerateRequest": {
+        "properties": {
+          "draft": {
+            "$ref": "#/components/schemas/TimesheetDraft-Input"
+          }
+        },
+        "type": "object",
+        "required": [
+          "draft"
+        ],
+        "title": "GenerateRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "JiraConnectRequest": {
+        "properties": {
+          "site_url": {
+            "type": "string",
+            "title": "Site Url"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "api_token": {
+            "type": "string",
+            "title": "Api Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "site_url",
+          "email",
+          "api_token"
+        ],
+        "title": "JiraConnectRequest"
+      },
+      "JiraStatus": {
+        "properties": {
+          "connected": {
+            "type": "boolean",
+            "title": "Connected",
+            "default": false
+          },
+          "site_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Site Url"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "connected",
+          "site_url",
+          "email",
+          "message"
+        ],
+        "title": "JiraStatus"
+      },
+      "PreviewRequest": {
+        "properties": {
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "month": {
+            "type": "integer",
+            "maximum": 12.0,
+            "minimum": 1.0,
+            "title": "Month"
+          },
+          "template_id": {
+            "type": "string",
+            "title": "Template Id",
+            "default": "default-id"
+          },
+          "leave_dates": {
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": "array",
+            "title": "Leave Dates"
+          },
+          "manual_percent": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "propertyNames": {
+                "format": "date"
+              },
+              "type": "object"
+            },
+            "type": "object",
+            "title": "Manual Percent"
+          },
+          "story_state": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StoryState-Input"
+            },
+            "type": "object",
+            "title": "Story State"
+          },
+          "reroll_seed": {
+            "type": "integer",
+            "title": "Reroll Seed",
+            "default": 0
+          },
+          "show_all_days": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Show All Days"
+          },
+          "non_ticket_entries": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "propertyNames": {
+              "format": "date"
+            },
+            "type": "object",
+            "title": "Non Ticket Entries"
+          },
+          "manual_estimates": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Manual Estimates"
+          },
+          "manual_epics": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Manual Epics"
+          },
+          "custom_hours": {
+            "additionalProperties": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "type": "object"
+            },
+            "propertyNames": {
+              "format": "date"
+            },
+            "type": "object",
+            "title": "Custom Hours"
+          }
+        },
+        "type": "object",
+        "required": [
+          "year",
+          "month"
+        ],
+        "title": "PreviewRequest"
+      },
+      "SignatureStatus": {
+        "properties": {
+          "employee": {
+            "type": "boolean",
+            "title": "Employee",
+            "default": false
+          },
+          "team_lead": {
+            "type": "boolean",
+            "title": "Team Lead",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "employee",
+          "team_lead"
+        ],
+        "title": "SignatureStatus"
+      },
+      "StoryEntry-Input": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "epic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epic"
+          },
+          "percent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percent"
+          },
+          "activities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Activities"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "title"
+        ],
+        "title": "StoryEntry"
+      },
+      "StoryEntry-Output": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "epic": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Epic"
+          },
+          "percent": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Percent"
+          },
+          "activities": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Activities"
+          }
+        },
+        "type": "object",
+        "required": [
+          "key",
+          "title",
+          "epic",
+          "percent",
+          "activities"
+        ],
+        "title": "StoryEntry"
+      },
+      "StoryState-Input": {
+        "properties": {
+          "previous_percent": {
+            "type": "integer",
+            "title": "Previous Percent",
+            "default": 0
+          },
+          "prior_active_days": {
+            "type": "integer",
+            "title": "Prior Active Days",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "StoryState",
+        "description": "Status akhir bulan per story, disimpan agar bulan berikutnya melanjutkan."
+      },
+      "StoryState-Output": {
+        "properties": {
+          "previous_percent": {
+            "type": "integer",
+            "title": "Previous Percent",
+            "default": 0
+          },
+          "prior_active_days": {
+            "type": "integer",
+            "title": "Prior Active Days",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "previous_percent",
+          "prior_active_days"
+        ],
+        "title": "StoryState",
+        "description": "Status akhir bulan per story, disimpan agar bulan berikutnya melanjutkan."
+      },
+      "TemplateSpec-Input": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "id",
+              "en"
+            ],
+            "title": "Language",
+            "default": "id"
+          },
+          "company_name": {
+            "type": "string",
+            "title": "Company Name"
+          },
+          "client": {
+            "type": "string",
+            "title": "Client"
+          },
+          "department": {
+            "type": "string",
+            "title": "Department"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "employee_name": {
+            "type": "string",
+            "title": "Employee Name"
+          },
+          "team_lead_name": {
+            "type": "string",
+            "title": "Team Lead Name"
+          },
+          "work_start": {
+            "type": "string",
+            "title": "Work Start",
+            "default": "08:30"
+          },
+          "work_end": {
+            "type": "string",
+            "title": "Work End",
+            "default": "17:30"
+          },
+          "break_minutes": {
+            "type": "integer",
+            "title": "Break Minutes",
+            "default": 60
+          },
+          "show_all_days": {
+            "type": "boolean",
+            "title": "Show All Days",
+            "default": true
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone",
+            "default": "Asia/Jakarta"
+          },
+          "holiday_country": {
+            "type": "string",
+            "title": "Holiday Country",
+            "default": "ID"
+          },
+          "extra_holidays": {
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": "array",
+            "title": "Extra Holidays"
+          },
+          "file_name_pattern": {
+            "type": "string",
+            "title": "File Name Pattern",
+            "default": "TimeSheet_{name}_{year}.xlsx"
+          },
+          "formula": {
+            "$ref": "#/components/schemas/FormulaConfig-Input"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "company_name",
+          "client",
+          "department",
+          "title",
+          "employee_name",
+          "team_lead_name"
+        ],
+        "title": "TemplateSpec"
+      },
+      "TemplateSpec-Output": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "id",
+              "en"
+            ],
+            "title": "Language",
+            "default": "id"
+          },
+          "company_name": {
+            "type": "string",
+            "title": "Company Name"
+          },
+          "client": {
+            "type": "string",
+            "title": "Client"
+          },
+          "department": {
+            "type": "string",
+            "title": "Department"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "employee_name": {
+            "type": "string",
+            "title": "Employee Name"
+          },
+          "team_lead_name": {
+            "type": "string",
+            "title": "Team Lead Name"
+          },
+          "work_start": {
+            "type": "string",
+            "title": "Work Start",
+            "default": "08:30"
+          },
+          "work_end": {
+            "type": "string",
+            "title": "Work End",
+            "default": "17:30"
+          },
+          "break_minutes": {
+            "type": "integer",
+            "title": "Break Minutes",
+            "default": 60
+          },
+          "show_all_days": {
+            "type": "boolean",
+            "title": "Show All Days",
+            "default": true
+          },
+          "timezone": {
+            "type": "string",
+            "title": "Timezone",
+            "default": "Asia/Jakarta"
+          },
+          "holiday_country": {
+            "type": "string",
+            "title": "Holiday Country",
+            "default": "ID"
+          },
+          "extra_holidays": {
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "type": "array",
+            "title": "Extra Holidays"
+          },
+          "file_name_pattern": {
+            "type": "string",
+            "title": "File Name Pattern",
+            "default": "TimeSheet_{name}_{year}.xlsx"
+          },
+          "formula": {
+            "$ref": "#/components/schemas/FormulaConfig-Output"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "language",
+          "company_name",
+          "client",
+          "department",
+          "title",
+          "employee_name",
+          "team_lead_name",
+          "work_start",
+          "work_end",
+          "break_minutes",
+          "show_all_days",
+          "timezone",
+          "holiday_country",
+          "extra_holidays",
+          "file_name_pattern",
+          "formula"
+        ],
+        "title": "TemplateSpec"
+      },
+      "TimesheetDraft-Input": {
+        "properties": {
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "month": {
+            "type": "integer",
+            "title": "Month"
+          },
+          "template_id": {
+            "type": "string",
+            "title": "Template Id"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/DayRow-Input"
+            },
+            "type": "array",
+            "title": "Rows"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Blockers"
+          },
+          "story_end_state": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StoryState-Input"
+            },
+            "type": "object",
+            "title": "Story End State"
+          }
+        },
+        "type": "object",
+        "required": [
+          "year",
+          "month",
+          "template_id",
+          "rows"
+        ],
+        "title": "TimesheetDraft"
+      },
+      "TimesheetDraft-Output": {
+        "properties": {
+          "year": {
+            "type": "integer",
+            "title": "Year"
+          },
+          "month": {
+            "type": "integer",
+            "title": "Month"
+          },
+          "template_id": {
+            "type": "string",
+            "title": "Template Id"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/DayRow-Output"
+            },
+            "type": "array",
+            "title": "Rows"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "blockers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Blockers"
+          },
+          "story_end_state": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StoryState-Output"
+            },
+            "type": "object",
+            "title": "Story End State"
+          }
+        },
+        "type": "object",
+        "required": [
+          "year",
+          "month",
+          "template_id",
+          "rows",
+          "warnings",
+          "blockers",
+          "story_end_state"
+        ],
+        "title": "TimesheetDraft"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
